@@ -5,10 +5,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter product name"],
         trim: true,
-        maxLength: [100, "product name can not exceed 100 character"]
+        maxLength: [100, "Product name cannot exceed 100 characters"]
     },
     price: {
         type: Number,
+        required: true,
         default: 0.0
     },
     description: {
@@ -21,7 +22,7 @@ const productSchema = new mongoose.Schema({
     },
     images: [
         {
-            fileName: {
+            image: {
                 type: String,
                 required: true
             }
@@ -43,9 +44,9 @@ const productSchema = new mongoose.Schema({
                 'Beauty/Health',
                 'Sports',
                 'Outdoor',
-                'Home',
+                'Home'
             ],
-            message: "Please select correct category"
+            message : "Please select correct category"
         }
     },
     seller: {
@@ -55,16 +56,20 @@ const productSchema = new mongoose.Schema({
     stock: {
         type: Number,
         required: [true, "Please enter product stock"],
-        maxLength: [20, "Product stock cannot exceed 20"]
+        maxLength: [20, 'Product stock cannot exceed 20']
     },
-    numOfReviews: [
+    numOfReviews: {
+        type: Number,
+        default: 0
+    },
+    reviews: [
         {
-            name: {
-                type: String,
-                required: true
+            user:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref: 'User'
             },
             rating: {
-                type:String,
+                type: String,
                 required: true
             },
             comment: {
@@ -73,12 +78,16 @@ const productSchema = new mongoose.Schema({
             }
         }
     ],
-    createdAt: {
+    user: {
+        type : mongoose.Schema.Types.ObjectId
+    }
+    ,
+    createdAt:{
         type: Date,
         default: Date.now()
     }
-});
+})
 
-let schema = mongoose.model('Product', productSchema);
+let schema = mongoose.model('Product', productSchema)
 
-module.exports = schema;
+module.exports = schema
