@@ -25,8 +25,8 @@ exports.newProduct = async (req, res, next) => {
 exports.getSingleProduct = async (req, res, next) => {
     const product = await productModel.findById(req.params.id);
 
-    if(!product) {
-        new ErrorHandler('Product not found', 400);
+    if(!product) {        
+        return next(new ErrorHandler('Product not found', 400));
     }
 
     res.status(201).json({
