@@ -1,16 +1,19 @@
 const productModel = require('../models/productModel');
 const ErrorHandler = require('../utils/errorHandler');
 const catchAsyncError = require('../midlewares/catchAsyncError');
+const APIFeatures = require('../utils/apiFeatures');
 
 // Get All Products - /api/v1/products
-exports.getAllProducts = async (req, res, next)=>{
-    const products = await productModel.find();
+exports.getAllProducts = catchAsyncError(async (req, res, next)=>{
+    const apiFeatures = new APIFeatures(productModel.find(), req.query).search();
+
+    const products = await apiFeatures.query;
     res.status(200).json({
         success: true,
         count: products.length,
         products
     })
-}
+})
 
 // Create Product - /api/v1/product/new
 exports.newProduct = catchAsyncError(async (req, res, next) => {
@@ -23,7 +26,7 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
 
 
 // Get single Products - /api/v1/product/:id
-exports.getSingleProduct = async (req, res, next) => {
+exports.getSingleProduct = catchAsyncError(async (req, res, next) => {
     const product = await productModel.findById(req.params.id);
 
     if(!product) {        
@@ -34,11 +37,11 @@ exports.getSingleProduct = async (req, res, next) => {
         success: true,
         product
     })
-}
+})
 
 
 // Update Product - /api/v1/product/:id
-exports.updateProduct = async (req, res, next) => {
+exports.updateProduct = catchAsyncError(async (req, res, next) => {
     let product = await productModel.findById(req.params.id);
 
     if(!product) {
@@ -56,10 +59,10 @@ exports.updateProduct = async (req, res, next) => {
         success: true,
         product
     })
-}
+})
 
 // Delete Product - /api/v1/product/:id
-exports.deleteProduct = async (req, res, next) => {
+exports.deleteProduct = catchAsyncError(async (req, res, next) => {
     const product = await productModel.findById(req.params.id);
 
     if(!product) {
@@ -75,4 +78,4 @@ exports.deleteProduct = async (req, res, next) => {
         success: true,
         message: "Pruduct deleted successfully"
     });
-}
+})
