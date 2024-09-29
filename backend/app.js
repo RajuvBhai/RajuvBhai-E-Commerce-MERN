@@ -1,8 +1,11 @@
 const express = require('express');
 const app = express();
 const errorMidleware = require('./midlewares/error');
+const cookieParser = require('cookie-parser');
 
 app.use(express.json());
+app.use(cookieParser());
+
 const products = require('./routes/productRoute');
 const auth = require('./routes/authRoute');
 
