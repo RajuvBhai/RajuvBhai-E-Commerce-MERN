@@ -5,3 +5,4 @@ npm i express
 npm i -g nodemon --save-dev  
 npm i validator 
 npm i bcrypt
+ npm i jsonwebtoken
