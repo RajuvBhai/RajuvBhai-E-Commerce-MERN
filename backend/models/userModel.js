@@ -40,7 +40,10 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.pre('save', async function (next){
-    this.password = await bcrypt.hash(this.password, 10)
+    if(!this.isModified('password')){
+        next();
+    }
+    this.password  = await bcrypt.hash(this.password, 10)
 })
 
 userSchema.methods.getJwtToken = function(){
@@ -50,19 +53,21 @@ userSchema.methods.getJwtToken = function(){
  }
 
  userSchema.methods.isValidPassword = async function(enteredPassword){
-    return await bcrypt.compare(enteredPassword, this.password)
- }
+    return  bcrypt.compare(enteredPassword, this.password)
+}
 
- userSchema.methods.resetPassword = function(){
-    // Generate Token 
+ userSchema.methods.getResetToken = function(){
+    //Generate Token
     const token = crypto.randomBytes(20).toString('hex');
 
-    // Generate Hash and set to resetPasswordToken 
-    this.resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
+    //Generate Hash and set to resetPasswordToken
+   this.resetPasswordToken =  crypto.createHash('sha256').update(token).digest('hex');
 
-    // set token expire time 
+   //Set token expire time
     this.resetPasswordTokenExpire = Date.now() + 30 * 60 * 1000;
- }
+
+    return token
+}
 
 let schema = mongoose.model('User', userSchema);
 module.exports = schema;
